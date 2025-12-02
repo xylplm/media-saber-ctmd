@@ -165,6 +165,18 @@ class TMDBFetcher:
         
         print(f"已保存: {file_path}")
     
+    def check_directory_exists(self, base_dir: str) -> bool:
+        """
+        检查目录是否已存在
+        
+        Args:
+            base_dir: 目录路径
+            
+        Returns:
+            目录是否存在
+        """
+        return os.path.exists(base_dir) and os.path.isdir(base_dir)
+    
     def fetch_and_save_movie(self, movie_id: int) -> None:
         """
         获取并保存电影相关数据
@@ -176,6 +188,14 @@ class TMDBFetcher:
         
         # 创建目录 (保存到上级目录的tmdb_config文件夹)
         base_dir = os.path.join("..", "tmdb_config", "movie", str(movie_id))
+        
+        # 检查目录是否已存在
+        if self.check_directory_exists(base_dir):
+            print(f"\n⚠️  警告: 目录已存在: {base_dir}")
+            print("该电影数据已经生成，为防止覆盖已维护的元数据，操作已取消。")
+            print("\n如需重新生成，请先手动删除该目录:")
+            print(f"  rmdir /s \"{os.path.abspath(base_dir)}\"")
+            return
         
         # 获取并保存详细信息
         details = self.fetch_movie_details(movie_id)
@@ -200,6 +220,14 @@ class TMDBFetcher:
         
         # 创建目录 (保存到上级目录的tmdb_config文件夹)
         base_dir = os.path.join("..", "tmdb_config", "tv", str(tv_id))
+        
+        # 检查目录是否已存在
+        if self.check_directory_exists(base_dir):
+            print(f"\n⚠️  警告: 目录已存在: {base_dir}")
+            print("该电视剧数据已经生成，为防止覆盖已维护的元数据，操作已取消。")
+            print("\n如需重新生成，请先手动删除该目录:")
+            print(f"  rmdir /s \"{os.path.abspath(base_dir)}\"")
+            return
         
         # 获取并保存详细信息
         details = self.fetch_tv_details(tv_id)
