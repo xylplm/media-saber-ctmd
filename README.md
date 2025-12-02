@@ -17,6 +17,17 @@ Media Saber 是一款适合自己人用的媒体管理工具。
 
 本仓库是 Media Saber 的元数据自维护库。主要目的是解决TMDB库被恶意修改导致识别错误的问题，通过社区协作维护高质量的媒体元数据。
 
+### 🔄 自动更新
+
+本仓库通过 GitHub Actions 自动打包和发布元数据：
+- 📦 每次 `tmdb_config` 文件夹有更新时，自动生成压缩包并发布
+- 📥 Media Saber 程序在配置开启后，会自动订阅和更新最新的元数据
+- ✓ 支持完整性校验（SHA256）
+
+无需手动配置，程序会自动拉取最新数据。
+
+详见 [Release 页面](https://github.com/xylplm/media-saber-ctmd/releases)
+
 ## 📁 目录结构
 
 ```
@@ -118,8 +129,7 @@ chmod +x ./cli/tmdb-fetcher-macos-arm64
   "language": "zh-CN",                           // 响应语言（默认中文）
   "proxy": {
     "enabled": true,                             // 是否启用代理
-    "http": "http://127.0.0.1:7890",            // HTTP 代理地址
-    "https": "http://127.0.0.1:7890"            // HTTPS 代理地址
+    "url": "http://127.0.0.1:7890"              // 代理服务器地址
   }
 }
 ```
@@ -128,7 +138,7 @@ chmod +x ./cli/tmdb-fetcher-macos-arm64
 - `tmdb_api_key` - 必须填写，从 [TMDB 设置](https://www.themoviedb.org/settings/api) 申请
 - `language` - 响应数据的语言代码，默认 `zh-CN`（简体中文）
 - `proxy.enabled` - 如果在中国大陆，建议设为 `true`
-- `proxy.http/https` - 代理服务器地址，根据实际情况修改
+- `proxy.url` - 代理服务器地址，根据实际情况修改
 
 #### 自己编译（开发者）
 

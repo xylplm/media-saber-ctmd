@@ -1,0 +1,102 @@
+name: Release TMDB Config
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'tmdb_config/**'
+      - '.github/workflows/release.yml'
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create release assets
+        run: |
+          # Create tar.gz archive (最小化格式)
+          tar -czf tmdb_config.tar.gz tmdb_config/
+          
+          # Calculate checksum
+          sha256sum tmdb_config.tar.gz > tmdb_config.tar.gz.sha256
+          
+          # Display file size
+          echo "=== Archive Info ==="
+          ls -lh tmdb_config.tar.gz
+          echo ""
+          echo "=== Checksum ==="
+          cat tmdb_config.tar.gz.sha256
+
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+      - name: Get commit count
+        id: commit
+        run: echo "count=$(git rev-list --count HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.date.outputs.date }}-build${{ steps.commit.outputs.count }}
+          name: TMDB Config Release - ${{ steps.date.outputs.date }}
+          body: |
+            ## 📦 TMDB 元数据发布
+
+            自动发布 TMDB 元数据压缩包
+
+            ### 📥 下载
+
+            - **tmdb_config.tar.gz** - 压缩元数据（推荐自动下载）
+
+            ### ✓ 验证完整性
+
+            ```bash
+            # Linux/macOS
+            sha256sum -c tmdb_config.tar.gz.sha256
+
+            # Windows PowerShell
+            (Get-FileHash tmdb_config.tar.gz).Hash -eq (Get-Content tmdb_config.tar.gz.sha256).Split()[0]
+            ```
+
+            ### 📝 使用方式
+
+            **程序自动下载:**
+            ```bash
+            # 运行更新脚本
+            cd scripts
+            ./update_tmdb_config.sh        # Linux/macOS
+            .\update_tmdb_config.bat       # Windows
+            ```
+
+            **手动下载:**
+            1. 下载 `tmdb_config.tar.gz`
+            2. 解压到项目根目录
+            3. 覆盖现有的 `tmdb_config` 文件夹
+
+            ### 🔄 更新信息
+
+            - **发布时间**: ${{ steps.date.outputs.date }}
+            - **构建号**: ${{ steps.commit.outputs.count }}
+
+          files: |
+            tmdb_config.tar.gz
+            tmdb_config.tar.gz.sha256
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update release notes
+        if: always()
+        run: |
+          echo "✓ Release created successfully!"
+          echo "Tag: v${{ steps.date.outputs.date }}-build${{ steps.commit.outputs.count }}"
