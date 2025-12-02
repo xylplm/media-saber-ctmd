@@ -3,7 +3,6 @@
   "language": "zh-CN",
   "proxy": {
     "enabled": true,
-    "http": "http://127.0.0.1:7890",
-    "https": "http://127.0.0.1:7890"
+    "url": "http://127.0.0.1:7890"
   }
 }

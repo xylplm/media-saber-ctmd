@@ -19,8 +19,7 @@ type Config struct {
 	Language   string `json:"language"`
 	Proxy      struct {
 		Enabled bool   `json:"enabled"`
-		HTTP    string `json:"http"`
-		HTTPS   string `json:"https"`
+		URL     string `json:"url"`
 	} `json:"proxy"`
 }
 
@@ -90,11 +89,11 @@ func createHTTPClient(config Config) *http.Client {
 	transport := &http.Transport{}
 
 	// 配置代理
-	if config.Proxy.Enabled {
-		proxyURL, err := url.Parse(config.Proxy.HTTP)
+	if config.Proxy.Enabled && config.Proxy.URL != "" {
+		proxyURL, err := url.Parse(config.Proxy.URL)
 		if err == nil {
 			transport.Proxy = http.ProxyURL(proxyURL)
-			fmt.Printf("已启用代理: %s\n", config.Proxy.HTTP)
+			fmt.Printf("已启用代理: %s\n", config.Proxy.URL)
 		}
 	}
 
