@@ -23,8 +23,13 @@ jobs:
 
       - name: Create release assets
         run: |
-          # Create tar.gz archive (最小化格式)
-          tar -czf tmdb_config.tar.gz tmdb_config/
+          # Create tar.gz archive with proper directory structure
+          # 确保顶层目录为 media-saber-ctmd-main
+          REPO_NAME="media-saber-ctmd-main"
+          mkdir -p "$REPO_NAME"
+          cp -r tmdb_config "$REPO_NAME/"
+          tar -czf tmdb_config.tar.gz "$REPO_NAME/"
+          rm -rf "$REPO_NAME"
           
           # Calculate checksum
           sha256sum tmdb_config.tar.gz > tmdb_config.tar.gz.sha256
