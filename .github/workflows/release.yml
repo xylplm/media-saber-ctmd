@@ -52,9 +52,7 @@ jobs:
           body: |
             TMDB 元数据更新发布
             
-            **自动更新**: Media Saber 程序会自动订阅和下载最新元数据
-            
-            **手动更新**: 下载 `tmdb_config.tar.gz` 并解压到项目根目录
+            **自动更新**: Media Saber 程序会自动订阅和下载最新元数据包，无需手动操作。
 
           files: |
             tmdb_config.tar.gz
