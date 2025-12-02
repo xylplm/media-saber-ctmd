@@ -38,55 +38,53 @@ tmdb_config/
 
 ### 📥 获取TMDB数据
 
-我们提供了一个Python脚本 `tmdb_fetcher.py` 来自动从TMDB API获取媒体数据。
+我们提供了预编译的命令行工具，**无需任何环境**，下载即用！
 
-#### 1. 安装依赖
-
-```bash
-cd scripts/python
-pip install -r requirements.txt
-```
-
-#### 2. 配置API Key
-
-1. 复制配置文件模板：
-   ```bash
-   cd scripts
-   copy config.example.json config.json
-   ```
-
-2. 在 [TMDB网站](https://www.themoviedb.org/settings/api) 申请API Key
-
-3. 编辑 `config.json` 文件，填入您的API Key：
-   ```json
-   {
-     "tmdb_api_key": "your_api_key_here",
-     "language": "zh-CN",
-     "proxy": {
-       "enabled": false,
-       "http": "http://127.0.0.1:7890",
-       "https": "http://127.0.0.1:7890"
-     }
-   }
-   ```
-
-4. 如果需要使用代理，将 `enabled` 设置为 `true` 并配置代理地址
-
-#### 3. 运行脚本
+**第一步：配置API Key**
 
 ```bash
-cd scripts/python
-python tmdb_fetcher.py
+cd cli
+copy config.example.json config.json
+# 编辑 config.json 填入你的 TMDB API Key
 ```
 
-按照提示操作：
+在 [TMDB网站](https://www.themoviedb.org/settings/api) 申请API Key
+
+**第二步：运行工具**
+
+根据你的操作系统，选择对应的可执行文件：
+
+**Windows:**
+```bash
+# 双击运行或命令行执行
+.\cli\tmdb-fetcher-windows-amd64.exe
+```
+
+**Linux:**
+```bash
+chmod +x ./cli/tmdb-fetcher-linux-amd64
+./cli/tmdb-fetcher-linux-amd64
+```
+
+**macOS:**
+```bash
+# Intel 芯片
+chmod +x ./cli/tmdb-fetcher-macos-amd64
+./cli/tmdb-fetcher-macos-amd64
+
+# Apple Silicon (M1/M2/M3)
+chmod +x ./cli/tmdb-fetcher-macos-arm64
+./cli/tmdb-fetcher-macos-arm64
+```
+
+**第三步：按提示操作**
+
 1. 选择媒体类型（电影或电视剧）
-2. 输入TMDB ID（可从TMDB网站获取）
-3. 脚本会自动获取并保存数据到对应目录
+2. 输入TMDB ID（可从TMDB网站的URL中获取，如 `https://www.themoviedb.org/movie/842675` 中的 `842675`）
+3. 工具会自动获取并保存数据到 `tmdb_config` 目录
 
-#### 示例
+**示例 - 获取电影《流浪地球2》(ID: 842675)：**
 
-获取电影《流浪地球2》(TMDB ID: 842675)：
 ```
 请选择媒体类型:
   1. 电影 (Movie)
@@ -96,9 +94,53 @@ python tmdb_fetcher.py
 请输入选项 (1/2/q): 1
 
 请输入TMDB ID (或输入 'q' 退出): 842675
+
+开始获取电影 ID: 842675 的数据...
+正在请求: /movie/842675
+已保存: ../tmdb_config/movie/842675/details.json
+正在请求: /movie/842675/release_dates
+已保存: ../tmdb_config/movie/842675/release_dates.json
+
+✓ 电影数据获取完成!
+  标题: 流浪地球2
+  目录: ../tmdb_config/movie/842675
 ```
 
 数据将自动保存到 `tmdb_config/movie/842675/` 目录下。
+
+#### 配置说明
+
+配置文件 `cli/config.json` 可以自定义以下选项：
+
+```json
+{
+  "tmdb_api_key": "your_api_key_here",           // TMDB API Key（必填）
+  "language": "zh-CN",                           // 响应语言（默认中文）
+  "proxy": {
+    "enabled": true,                             // 是否启用代理
+    "http": "http://127.0.0.1:7890",            // HTTP 代理地址
+    "https": "http://127.0.0.1:7890"            // HTTPS 代理地址
+  }
+}
+```
+
+**配置说明：**
+- `tmdb_api_key` - 必须填写，从 [TMDB 设置](https://www.themoviedb.org/settings/api) 申请
+- `language` - 响应数据的语言代码，默认 `zh-CN`（简体中文）
+- `proxy.enabled` - 如果在中国大陆，建议设为 `true`
+- `proxy.http/https` - 代理服务器地址，根据实际情况修改
+
+#### 自己编译（开发者）
+
+如果你想自己编译工具，需要安装 [Go 1.21+](https://golang.org/dl/)：
+
+```bash
+cd scripts
+# Windows: 运行 build.bat
+# Linux/macOS: ./build.sh
+```
+
+编译后的文件会保存到 `cli/` 目录。详见 [scripts/README.md](scripts/README.md)
 
 #### 获取的数据内容
 
@@ -159,7 +201,7 @@ python tmdb_fetcher.py
 1. **发现问题**：如果您在使用 Media Saber 时发现TMDB数据有误，请在 [GitHub Issues](https://github.com/xylplm/media-saber-ctmd/issues) 上提交反馈，详细描述问题所在。
 
 2. **使用脚本获取并修正**：
-   - 使用 `tmdb_fetcher.py` 脚本获取原始TMDB数据
+   - 运行 `cli/` 目录中的工具获取原始TMDB数据
    - 在生成的JSON文件中修正错误或补充信息
    - 通过 [Pull Request](https://github.com/xylplm/media-saber-ctmd/pulls) 提交修正后的文件
 

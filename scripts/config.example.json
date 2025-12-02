@@ -1,9 +1,0 @@
-{
-  "tmdb_api_key": "your_tmdb_api_key_here",
-  "language": "zh-CN",
-  "proxy": {
-    "enabled": true,
-    "http": "http://127.0.0.1:7890",
-    "https": "http://127.0.0.1:7890"
-  }
-}

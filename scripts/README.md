@@ -1,46 +1,46 @@
-# 📜 Scripts 目录
+# Scripts 源代码目录
 
-本目录包含用于从 TMDB API 获取媒体数据的脚本，支持多种编程语言。
+本目录包含 TMDB Fetcher 的源代码，仅供开发者使用。
 
-## 📁 目录结构
+## 📂 文件说明
 
+- `tmdb_fetcher.go` - Go 程序源代码
+- `go.mod` - Go 模块配置
+- `build.bat` - Windows 交叉编译脚本
+- `build.sh` - Linux/macOS 交叉编译脚本
+
+## 🔨 编译
+
+如需编译工具，首先安装 [Go 1.21+](https://golang.org/dl/)
+
+**Windows:**
+```bash
+.\build.bat
 ```
-scripts/
-├── config.example.json  # 配置文件模板（所有语言共用）
-├── python/              # Python 实现
-│   ├── tmdb_fetcher.py
-│   └── requirements.txt
-└── (其他语言实现...)
+
+**Linux/macOS:**
+```bash
+chmod +x build.sh
+./build.sh
 ```
 
-## 🚀 使用说明
+编译完成后的可执行文件会自动保存到项目根目录的 `cli/` 目录。
 
-### 第一步：配置 API Key
-
-所有语言版本共用同一个配置文件：
+## 💡 本地开发
 
 ```bash
-cd scripts
-copy config.example.json config.json
-# 编辑 config.json 填入你的 TMDB API Key
+# 直接运行（需要在 cli 目录有 config.json）
+go run tmdb_fetcher.go
+
+# 单平台编译
+go build -o tmdb-fetcher tmdb_fetcher.go
 ```
 
-### Python 版本
+## 📝 修改编译输出目录
 
-```bash
-cd python
-pip install -r requirements.txt
-python tmdb_fetcher.py
-```
+编译脚本中的 `OUTPUT_DIR` 默认指向 `../../cli`。如需修改，编辑对应脚本文件。
 
-详细使用说明请参考主项目的 [README.md](../README.md)。
+## 🔗 更多信息
 
-## 🔮 未来计划
-
-我们计划添加更多语言的实现：
-- Go
-- Node.js
-- Rust
-- ...
-
-欢迎贡献其他语言版本的实现！
+- [用户文档](../README.md)
+- [CLI 工具说明](../cli/README.md)

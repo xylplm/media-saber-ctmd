@@ -2,8 +2,14 @@
 .idea
 
 # 配置文件(包含API Key)
-scripts/config.json
-scripts/*/config.json
+cli/config.json
+
+# 编译产物（开发临时文件）
+scripts/tmdb-fetcher
+scripts/tmdb-fetcher.exe
+
+# 旧的 bin 目录（已废弃）
+bin/
 
 # Python
 __pycache__/
