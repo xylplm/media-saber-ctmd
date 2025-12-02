@@ -3,6 +3,7 @@
 
 # 配置文件(包含API Key)
 scripts/config.json
+scripts/*/config.json
 
 # Python
 __pycache__/

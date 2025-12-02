@@ -17,12 +17,12 @@ class TMDBFetcher:
     
     BASE_URL = "https://api.themoviedb.org/3"
     
-    def __init__(self, config_path: str = "config.json"):
+    def __init__(self, config_path: str = "../config.json"):
         """
         初始化TMDB获取器
         
         Args:
-            config_path: 配置文件路径
+            config_path: 配置文件路径（默认在上级目录）
         """
         self.config = self._load_config(config_path)
         self.api_key = self.config.get("tmdb_api_key")
@@ -186,8 +186,8 @@ class TMDBFetcher:
         """
         print(f"\n开始获取电影 ID: {movie_id} 的数据...")
         
-        # 创建目录 (保存到上级目录的tmdb_config文件夹)
-        base_dir = os.path.join("..", "tmdb_config", "movie", str(movie_id))
+        # 创建目录 (保存到上两级目录的tmdb_config文件夹)
+        base_dir = os.path.join("..", "..", "tmdb_config", "movie", str(movie_id))
         
         # 检查目录是否已存在
         if self.check_directory_exists(base_dir):
@@ -218,8 +218,8 @@ class TMDBFetcher:
         """
         print(f"\n开始获取电视剧 ID: {tv_id} 的数据...")
         
-        # 创建目录 (保存到上级目录的tmdb_config文件夹)
-        base_dir = os.path.join("..", "tmdb_config", "tv", str(tv_id))
+        # 创建目录 (保存到上两级目录的tmdb_config文件夹)
+        base_dir = os.path.join("..", "..", "tmdb_config", "tv", str(tv_id))
         
         # 检查目录是否已存在
         if self.check_directory_exists(base_dir):

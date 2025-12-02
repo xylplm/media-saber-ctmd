@@ -43,7 +43,7 @@ tmdb_config/
 #### 1. 安装依赖
 
 ```bash
-cd scripts
+cd scripts/python
 pip install -r requirements.txt
 ```
 
@@ -75,7 +75,7 @@ pip install -r requirements.txt
 #### 3. 运行脚本
 
 ```bash
-cd scripts
+cd scripts/python
 python tmdb_fetcher.py
 ```
 
