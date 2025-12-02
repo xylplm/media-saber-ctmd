@@ -1,0 +1,69 @@
+GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) v3.0 WITH NON-COMMERCIAL CLAUSE
+
+Copyright (c) 2023-2025 Media Saber Community (xylplm and contributors)
+
+本项目采用 GNU Affero General Public License v3.0 许可证，并附加非商业使用限制条款。
+
+===============================================================================
+重要约束条款 (ADDITIONAL TERMS)
+===============================================================================
+
+1. 开源要求 (Copyleft Requirement):
+   任何使用、修改或基于本项目的衍生作品，必须以相同的 AGPL-3.0 许可证开源。
+   包括但不限于：
+   - 直接使用本项目代码或数据
+   - 修改本项目后的版本
+   - 基于本项目开发的衍生项目
+   - 通过网络提供服务的项目(即使未分发代码)
+
+2. 非商业使用限制 (Non-Commercial Use):
+   本项目及其衍生作品仅可用于非商业目的。禁止任何形式的商业使用，包括但不限于：
+   - 将本项目或其衍生作品作为商业产品销售或提供付费服务
+   - 在商业环境中使用本项目或其数据以获取直接或间接的经济利益
+   - 利用本项目进行广告推广或营销活动
+   - 接受捐赠、赞助等任何形式的经济回报
+   
+   如需商业使用，必须获得版权所有者的书面授权。
+
+3. 归属声明 (Attribution):
+   在使用、修改或分发本项目时，必须：
+   - 保留原始版权声明
+   - 明确标注修改内容
+   - 提供本许可证的完整副本
+   - 提供源代码的访问方式
+
+4. 数据来源声明:
+   本项目中的元数据来源于 TMDB (The Movie Database)，使用时必须遵守 TMDB 的使用条款。
+
+===============================================================================
+GNU AFFERO GENERAL PUBLIC LICENSE (完整条款)
+===============================================================================
+
+Version 3, 19 November 2007
+
+Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+
+Everyone is permitted to copy and distribute verbatim copies of this license 
+document, but changing it is not allowed.
+
+Preamble
+
+The GNU Affero General Public License is a free, copyleft license for software 
+and other kinds of works, specifically designed to ensure cooperation with the 
+community in the case of network server software.
+
+本许可证完整条款请参考: https://www.gnu.org/licenses/agpl-3.0.html
+
+===============================================================================
+免责声明 (DISCLAIMER)
+===============================================================================
+
+本项目按"现状"提供，不提供任何明示或暗示的保证，包括但不限于适销性、特定用途的
+适用性和非侵权性的保证。在任何情况下，作者或版权持有人均不对任何索赔、损害或其他
+责任负责，无论是在合同诉讼、侵权行为还是其他方面。
+
+使用本项目产生的任何责任需由使用者本人承担。
+
+===============================================================================
+
+若违反上述条款，您将自动失去本许可证授予的所有权利。
