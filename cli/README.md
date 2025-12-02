@@ -155,6 +155,5 @@ A: 右键点击文件，选择"打开"，或在终端运行 `xattr -d com.apple.
 ## 🔗 相关链接
 
 - [主文档](../README.md)
-- [Go 源码](../scripts/go/)
-- [Python 版本](../scripts/python/)
+- [源代码](../scripts/README.md)
 - [TMDB API 文档](https://developers.themoviedb.org/3)
