@@ -1,0 +1,125 @@
+{
+  "results": [
+    {
+      "descriptors": [],
+      "iso_3166_1": "DE",
+      "rating": "12"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "US",
+      "rating": "TV-14"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "FR",
+      "rating": "10"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "GB",
+      "rating": "15"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "SG",
+      "rating": "PG13"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "CA",
+      "rating": "C8"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "ES",
+      "rating": "16"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "PH",
+      "rating": "G"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "AU",
+      "rating": "M"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "MX",
+      "rating": "B-15"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "KR",
+      "rating": "15"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "BR",
+      "rating": "14"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "AT",
+      "rating": "14"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "IE",
+      "rating": "15"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "CH",
+      "rating": "16"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "PL",
+      "rating": "16"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "HU",
+      "rating": "16"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "CZ",
+      "rating": "15+"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "RO",
+      "rating": "15"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "TH",
+      "rating": "น 13+"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "DK",
+      "rating": "11"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "PR",
+      "rating": "TV-14"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "VI",
+      "rating": "TV-14"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "IN",
+      "rating": "U/A 16+"
+    }
+  ],
+  "id": 37854
+}
