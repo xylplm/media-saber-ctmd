@@ -34,7 +34,85 @@ tmdb_config/
                 └── episode/        # 集数目录（如需要）
 ```
 
-## 🛠️ TMDB元数据维护指南
+## � 快速开始
+
+### 📥 获取TMDB数据
+
+我们提供了一个Python脚本 `tmdb_fetcher.py` 来自动从TMDB API获取媒体数据。
+
+#### 1. 安装依赖
+
+```bash
+cd scripts
+pip install -r requirements.txt
+```
+
+#### 2. 配置API Key
+
+1. 复制配置文件模板：
+   ```bash
+   cd scripts
+   copy config.example.json config.json
+   ```
+
+2. 在 [TMDB网站](https://www.themoviedb.org/settings/api) 申请API Key
+
+3. 编辑 `config.json` 文件，填入您的API Key：
+   ```json
+   {
+     "tmdb_api_key": "your_api_key_here",
+     "language": "zh-CN",
+     "proxy": {
+       "enabled": false,
+       "http": "http://127.0.0.1:7890",
+       "https": "http://127.0.0.1:7890"
+     }
+   }
+   ```
+
+4. 如果需要使用代理，将 `enabled` 设置为 `true` 并配置代理地址
+
+#### 3. 运行脚本
+
+```bash
+cd scripts
+python tmdb_fetcher.py
+```
+
+按照提示操作：
+1. 选择媒体类型（电影或电视剧）
+2. 输入TMDB ID（可从TMDB网站获取）
+3. 脚本会自动获取并保存数据到对应目录
+
+#### 示例
+
+获取电影《流浪地球2》(TMDB ID: 842675)：
+```
+请选择媒体类型:
+  1. 电影 (Movie)
+  2. 电视剧 (TV Show)
+  q. 退出
+
+请输入选项 (1/2/q): 1
+
+请输入TMDB ID (或输入 'q' 退出): 842675
+```
+
+数据将自动保存到 `tmdb_config/movie/842675/` 目录下。
+
+#### 获取的数据内容
+
+**电影数据包含：**
+- `details.json` - 包含完整的电影信息、演职人员、其他片名、翻译、外部ID等
+- `release_dates.json` - 各国发行日期和分级信息
+
+**电视剧数据包含：**
+- `details.json` - 包含完整的电视剧信息、演职人员、其他剧名、翻译、外部ID等
+- `content_ratings.json` - 各国内容分级信息
+
+生成的JSON文件可以直接用于后续的维护和修改。
+
+## �️ TMDB元数据维护指南
 
 ### 🧱 数据结构说明
 
@@ -50,11 +128,42 @@ tmdb_config/
 #### tv/{tmdb_id}/content_ratings.json
 包含电视剧在不同国家/地区的内容分级信息。
 
+### ✏️ 维护和修改元数据
+
+使用脚本生成的JSON文件后，你可以根据需要对元数据进行修改和维护：
+
+1. **找到生成的文件**
+   - 电影：`tmdb_config/movie/{tmdb_id}/details.json` 和 `release_dates.json`
+   - 电视剧：`tmdb_config/tv/{tmdb_id}/details.json` 和 `content_ratings.json`
+
+2. **修改内容**
+   - 使用任何文本编辑器打开JSON文件
+   - 修正错误的标题、描述、日期等信息
+   - 添加缺失的翻译或其他语言版本
+   - 更正演职人员信息
+   - 修改分级信息等
+
+3. **保持格式**
+   - 确保JSON格式正确（可使用在线JSON验证工具）
+   - 保持与原始TMDB数据结构一致
+   - 注意中文编码使用UTF-8
+
+4. **常见修改场景**
+   - 修正被恶意篡改的中文译名
+   - 补充缺失的中文描述
+   - 更正错误的发行日期
+   - 添加准确的分级信息
+
 ### 🤝 如何贡献
 
 1. **发现问题**：如果您在使用 Media Saber 时发现TMDB数据有误，请在 [GitHub Issues](https://github.com/xylplm/media-saber-ctmd/issues) 上提交反馈，详细描述问题所在。
 
-2. **提交修正**：欢迎通过 [Pull Request](https://github.com/xylplm/media-saber-ctmd/pulls) 直接提交更正后的元数据文件。请确保：
+2. **使用脚本获取并修正**：
+   - 使用 `tmdb_fetcher.py` 脚本获取原始TMDB数据
+   - 在生成的JSON文件中修正错误或补充信息
+   - 通过 [Pull Request](https://github.com/xylplm/media-saber-ctmd/pulls) 提交修正后的文件
+
+3. **提交修正**：欢迎通过 [Pull Request](https://github.com/xylplm/media-saber-ctmd/pulls) 直接提交更正后的元数据文件。请确保：
    - 数据准确无误
    - 遵循现有的JSON格式和命名规范
    - 在PR描述中说明修改原因和数据来源
