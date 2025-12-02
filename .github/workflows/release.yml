@@ -48,45 +48,13 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.date.outputs.date }}-build${{ steps.commit.outputs.count }}
-          name: TMDB Config Release - ${{ steps.date.outputs.date }}
+          name: Release - ${{ steps.date.outputs.date }}
           body: |
-            ## 📦 TMDB 元数据发布
-
-            自动发布 TMDB 元数据压缩包
-
-            ### 📥 下载
-
-            - **tmdb_config.tar.gz** - 压缩元数据（推荐自动下载）
-
-            ### ✓ 验证完整性
-
-            ```bash
-            # Linux/macOS
-            sha256sum -c tmdb_config.tar.gz.sha256
-
-            # Windows PowerShell
-            (Get-FileHash tmdb_config.tar.gz).Hash -eq (Get-Content tmdb_config.tar.gz.sha256).Split()[0]
-            ```
-
-            ### 📝 使用方式
-
-            **程序自动下载:**
-            ```bash
-            # 运行更新脚本
-            cd scripts
-            ./update_tmdb_config.sh        # Linux/macOS
-            .\update_tmdb_config.bat       # Windows
-            ```
-
-            **手动下载:**
-            1. 下载 `tmdb_config.tar.gz`
-            2. 解压到项目根目录
-            3. 覆盖现有的 `tmdb_config` 文件夹
-
-            ### 🔄 更新信息
-
-            - **发布时间**: ${{ steps.date.outputs.date }}
-            - **构建号**: ${{ steps.commit.outputs.count }}
+            TMDB 元数据更新发布
+            
+            **自动更新**: Media Saber 程序会自动订阅和下载最新元数据
+            
+            **手动更新**: 下载 `tmdb_config.tar.gz` 并解压到项目根目录
 
           files: |
             tmdb_config.tar.gz
