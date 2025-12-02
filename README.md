@@ -1,4 +1,6 @@
-![logo-blue](logo.png)
+<div align="center">
+  <img src="logo.png" alt="logo-blue" width="300"/>
+</div>
 
 # 🎬 Media Saber 媒体库管理工具
 
