@@ -433,11 +433,66 @@ func submitPullRequest(reader *bufio.Reader) error {
 
 	if mode == "1" {
 		// 新建分支模式
-		fmt.Print("\n请输入分支名称 (默认: update-tmdb-config): ")
+		fmt.Print("\n请输入分支名称 (默认: 自动生成): ")
 		branchInput, _ := reader.ReadString('\n')
 		branchName = strings.TrimSpace(branchInput)
+		
 		if branchName == "" {
-			branchName = "update-tmdb-config"
+			// 自动生成分支名称
+			baseBranchName := "update-tmdb-config"
+			branchName = baseBranchName
+			counter := 1
+			
+			// 检查分支是否存在，如果存在则自动递增
+			fmt.Println("正在生成唯一的分支名称...")
+			for {
+				cmd := exec.Command("git", "-C", parentDir, "rev-parse", "--verify", branchName)
+				if err := cmd.Run(); err != nil {
+					// 分支不存在，可以使用
+					break
+				}
+				// 分支已存在，尝试下一个名称
+				counter++
+				branchName = fmt.Sprintf("%s-%d", baseBranchName, counter)
+			}
+			fmt.Printf("✓ 已自动生成分支名称: %s\n", branchName)
+		} else {
+			// 用户输入了分支名称，检查是否已存在
+			fmt.Println("正在检查分支是否存在...")
+			cmd := exec.Command("git", "-C", parentDir, "rev-parse", "--verify", branchName)
+			if err := cmd.Run(); err == nil {
+				// 分支已存在
+				fmt.Printf("\n⚠️  警告: 分支 '%s' 已存在\n", branchName)
+				fmt.Print("是否要自动创建一个新分支? (y/n): ")
+				autoCreateInput, _ := reader.ReadString('\n')
+				if strings.TrimSpace(strings.ToLower(autoCreateInput)) == "y" {
+					// 自动生成新分支名称
+					baseBranchName := branchName
+					counter := 1
+					originalBranchName := branchName
+					fmt.Println("正在生成唯一的分支名称...")
+					for {
+						cmd := exec.Command("git", "-C", parentDir, "rev-parse", "--verify", branchName)
+						if err := cmd.Run(); err != nil {
+							// 分支不存在，可以使用
+							break
+						}
+						counter++
+						branchName = fmt.Sprintf("%s-%d", baseBranchName, counter)
+					}
+					fmt.Printf("✓ 已创建新分支: %s (原分支名: %s)\n", branchName, originalBranchName)
+				} else {
+					fmt.Println("已取消，请使用其他分支名称或选择模式2提交到现有分支")
+					return nil
+				}
+			}
+		}
+
+		// 创建新分支
+		fmt.Printf("正在创建分支: %s...\n", branchName)
+		cmd = exec.Command("git", "-C", parentDir, "checkout", "-b", branchName)
+		if err := cmd.Run(); err != nil {
+			return fmt.Errorf("创建分支失败: %v", err)
 		}
 
 		// 输入提交信息
@@ -446,17 +501,6 @@ func submitPullRequest(reader *bufio.Reader) error {
 		message = strings.TrimSpace(messageInput)
 		if message == "" {
 			message = "Update TMDB config metadata"
-		}
-
-		// 切换到分支
-		fmt.Printf("\n正在创建分支: %s...\n", branchName)
-		cmd = exec.Command("git", "-C", parentDir, "checkout", "-b", branchName)
-		if _, err := cmd.CombinedOutput(); err != nil {
-			// 分支可能已存在，尝试切换
-			cmd = exec.Command("git", "-C", parentDir, "checkout", branchName)
-			if err := cmd.Run(); err != nil {
-				return fmt.Errorf("切换分支失败: %v", err)
-			}
 		}
 
 	} else if mode == "2" {
@@ -549,6 +593,115 @@ func submitPullRequest(reader *bufio.Reader) error {
 	return nil
 }
 
+// syncFromMainRepo 从主库同步最新代码
+func syncFromMainRepo(reader *bufio.Reader) error {
+	fmt.Println("\n" + strings.Repeat("=", 60))
+	fmt.Println("🔄 从主库同步最新代码")
+	fmt.Println("主库: https://github.com/xylplm/media-saber-ctmd")
+	fmt.Println(strings.Repeat("=", 60))
+
+	// 检查git是否可用
+	if _, err := exec.LookPath("git"); err != nil {
+		return fmt.Errorf("未找到git命令，请确保已安装git")
+	}
+
+	// 检查是否在正确的目录
+	parentDir := filepath.Join("..", "..")
+	if _, err := os.Stat(filepath.Join(parentDir, ".git")); err != nil {
+		return fmt.Errorf("未找到.git目录，请确保在正确的项目目录中")
+	}
+
+	// 检查是否有未提交的更改
+	cmd := exec.Command("git", "-C", parentDir, "status", "--porcelain")
+	output, _ := cmd.Output()
+	if len(output) > 0 {
+		fmt.Println("\n⚠️  警告: 您有未提交的更改:")
+		fmt.Println(string(output))
+		fmt.Print("继续同步会丢失这些更改，是否继续? (y/n): ")
+		input, _ := reader.ReadString('\n')
+		if strings.TrimSpace(strings.ToLower(input)) != "y" {
+			fmt.Println("已取消")
+			return nil
+		}
+	}
+
+	// 获取当前分支
+	cmd = exec.Command("git", "-C", parentDir, "rev-parse", "--abbrev-ref", "HEAD")
+	currentBranchOutput, err := cmd.Output()
+	if err != nil {
+		return fmt.Errorf("获取当前分支失败: %v", err)
+	}
+	currentBranch := strings.TrimSpace(string(currentBranchOutput))
+
+	// 如果不在main分支，提示用户
+	if currentBranch != "main" && currentBranch != "master" {
+		fmt.Printf("\n⚠️  当前分支: %s\n", currentBranch)
+		fmt.Print("同步建议在main/master分支上进行，是否切换到main分支? (y/n): ")
+		input, _ := reader.ReadString('\n')
+		if strings.TrimSpace(strings.ToLower(input)) == "y" {
+			fmt.Println("正在切换到main分支...")
+			cmd = exec.Command("git", "-C", parentDir, "checkout", "main")
+			if err := cmd.Run(); err != nil {
+				// 尝试master
+				cmd = exec.Command("git", "-C", parentDir, "checkout", "master")
+				if err := cmd.Run(); err != nil {
+					return fmt.Errorf("切换分支失败: %v", err)
+				}
+			}
+			fmt.Println("✓ 已切换到main分支")
+		}
+	}
+
+	// 检查upstream是否存在，如果不存在则添加
+	fmt.Println("\n正在检查upstream配置...")
+	cmd = exec.Command("git", "-C", parentDir, "remote", "get-url", "upstream")
+	upstreamURL, _ := cmd.Output()
+	if len(upstreamURL) == 0 {
+		fmt.Println("⚠️  未找到upstream，正在添加主库...")
+		cmd = exec.Command("git", "-C", parentDir, "remote", "add", "upstream", "https://github.com/xylplm/media-saber-ctmd.git")
+		if err := cmd.Run(); err != nil {
+			return fmt.Errorf("添加upstream失败: %v", err)
+		}
+		fmt.Println("✓ 已添加upstream")
+	} else {
+		fmt.Printf("✓ upstream已配置: %s\n", strings.TrimSpace(string(upstreamURL)))
+	}
+
+	// 获取upstream的最新更新
+	fmt.Println("\n正在获取upstream最新代码...")
+	cmd = exec.Command("git", "-C", parentDir, "fetch", "upstream")
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("获取upstream更新失败: %v", err)
+	}
+	fmt.Println("✓ upstream最新代码已获取")
+
+	// 同步main分支
+	fmt.Println("正在同步main分支...")
+	cmd = exec.Command("git", "-C", parentDir, "pull", "upstream", "main")
+	if err := cmd.Run(); err != nil {
+		// 尝试master
+		fmt.Println("main分支拉取失败，尝试master分支...")
+		cmd = exec.Command("git", "-C", parentDir, "pull", "upstream", "master")
+		if err := cmd.Run(); err != nil {
+			return fmt.Errorf("同步代码失败: %v", err)
+		}
+	}
+
+	// 显示同步信息
+	fmt.Println("\n" + strings.Repeat("=", 60))
+	fmt.Println("✓ 同步完成！")
+	fmt.Println(strings.Repeat("=", 60))
+
+	// 获取最新的commit信息
+	cmd = exec.Command("git", "-C", parentDir, "log", "-1", "--oneline")
+	logOutput, _ := cmd.Output()
+	if len(logOutput) > 0 {
+		fmt.Printf("\n最新提交: %s\n", string(logOutput))
+	}
+
+	return nil
+}
+
 func main() {
 	fmt.Println(banner)
 
@@ -566,16 +719,23 @@ func main() {
 	for {
 		fmt.Println("\n" + strings.Repeat("=", 60))
 		fmt.Println("主菜单:")
-		fmt.Println("  1. 获取电影/电视剧数据")
-		fmt.Println("  2. 一键提交修改到PR")
+		fmt.Println("  1. 从主库同步最新代码(修改前)")
+		fmt.Println("  2. 获取电影/电视剧数据")
+		fmt.Println("  3. 一键提交修改到PR(修改后)")
 		fmt.Println("  q. 退出")
-		fmt.Print("\n请输入选项 (1/2/q): ")
+		fmt.Print("\n请输入选项 (1/2/3/q): ")
 
 		mainChoice, _ := reader.ReadString('\n')
 		mainChoice = strings.TrimSpace(strings.ToLower(mainChoice))
 
 		switch mainChoice {
 		case "1":
+			// 从主库同步最新代码
+			if err := syncFromMainRepo(reader); err != nil {
+				fmt.Printf("\n错误: %v\n", err)
+			}
+
+		case "2":
 			// 原有的数据获取流程
 			for {
 				// 获取媒体类型
@@ -624,7 +784,7 @@ func main() {
 				}
 			}
 
-		case "2":
+		case "3":
 			// 提交PR
 			if err := submitPullRequest(reader); err != nil {
 				fmt.Printf("\n错误: %v\n", err)
