@@ -605,14 +605,21 @@ func syncFromMainRepo(reader *bufio.Reader) error {
 		return fmt.Errorf("未找到git命令，请确保已安装git")
 	}
 
-	// 检查是否在正确的目录
-	parentDir := filepath.Join("..", "..")
-	if _, err := os.Stat(filepath.Join(parentDir, ".git")); err != nil {
-		return fmt.Errorf("未找到.git目录，请确保在正确的项目目录中")
+	// 获取项目根目录（相对于scripts目录的上级）
+	parentDir := ".."
+	absParentDir, err := filepath.Abs(parentDir)
+	if err != nil {
+		return fmt.Errorf("获取项目路径失败: %v", err)
+	}
+
+	// 检查.git目录是否存在
+	gitDir := filepath.Join(absParentDir, ".git")
+	if _, err := os.Stat(gitDir); err != nil {
+		return fmt.Errorf("未找到git仓库（%s），请确保在正确的项目目录中", absParentDir)
 	}
 
 	// 检查是否有未提交的更改
-	cmd := exec.Command("git", "-C", parentDir, "status", "--porcelain")
+	cmd := exec.Command("git", "-C", absParentDir, "status", "--porcelain")
 	output, _ := cmd.Output()
 	if len(output) > 0 {
 		fmt.Println("\n⚠️  警告: 您有未提交的更改:")
@@ -626,7 +633,7 @@ func syncFromMainRepo(reader *bufio.Reader) error {
 	}
 
 	// 获取当前分支
-	cmd = exec.Command("git", "-C", parentDir, "rev-parse", "--abbrev-ref", "HEAD")
+	cmd = exec.Command("git", "-C", absParentDir, "rev-parse", "--abbrev-ref", "HEAD")
 	currentBranchOutput, err := cmd.Output()
 	if err != nil {
 		return fmt.Errorf("获取当前分支失败: %v", err)
@@ -640,10 +647,10 @@ func syncFromMainRepo(reader *bufio.Reader) error {
 		input, _ := reader.ReadString('\n')
 		if strings.TrimSpace(strings.ToLower(input)) == "y" {
 			fmt.Println("正在切换到main分支...")
-			cmd = exec.Command("git", "-C", parentDir, "checkout", "main")
+			cmd = exec.Command("git", "-C", absParentDir, "checkout", "main")
 			if err := cmd.Run(); err != nil {
 				// 尝试master
-				cmd = exec.Command("git", "-C", parentDir, "checkout", "master")
+				cmd = exec.Command("git", "-C", absParentDir, "checkout", "master")
 				if err := cmd.Run(); err != nil {
 					return fmt.Errorf("切换分支失败: %v", err)
 				}
@@ -654,11 +661,11 @@ func syncFromMainRepo(reader *bufio.Reader) error {
 
 	// 检查upstream是否存在，如果不存在则添加
 	fmt.Println("\n正在检查upstream配置...")
-	cmd = exec.Command("git", "-C", parentDir, "remote", "get-url", "upstream")
+	cmd = exec.Command("git", "-C", absParentDir, "remote", "get-url", "upstream")
 	upstreamURL, _ := cmd.Output()
 	if len(upstreamURL) == 0 {
 		fmt.Println("⚠️  未找到upstream，正在添加主库...")
-		cmd = exec.Command("git", "-C", parentDir, "remote", "add", "upstream", "https://github.com/xylplm/media-saber-ctmd.git")
+		cmd = exec.Command("git", "-C", absParentDir, "remote", "add", "upstream", "https://github.com/xylplm/media-saber-ctmd.git")
 		if err := cmd.Run(); err != nil {
 			return fmt.Errorf("添加upstream失败: %v", err)
 		}
@@ -669,7 +676,7 @@ func syncFromMainRepo(reader *bufio.Reader) error {
 
 	// 获取upstream的最新更新
 	fmt.Println("\n正在获取upstream最新代码...")
-	cmd = exec.Command("git", "-C", parentDir, "fetch", "upstream")
+	cmd = exec.Command("git", "-C", absParentDir, "fetch", "upstream")
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("获取upstream更新失败: %v", err)
 	}
@@ -677,11 +684,11 @@ func syncFromMainRepo(reader *bufio.Reader) error {
 
 	// 同步main分支
 	fmt.Println("正在同步main分支...")
-	cmd = exec.Command("git", "-C", parentDir, "pull", "upstream", "main")
+	cmd = exec.Command("git", "-C", absParentDir, "pull", "upstream", "main")
 	if err := cmd.Run(); err != nil {
 		// 尝试master
 		fmt.Println("main分支拉取失败，尝试master分支...")
-		cmd = exec.Command("git", "-C", parentDir, "pull", "upstream", "master")
+		cmd = exec.Command("git", "-C", absParentDir, "pull", "upstream", "master")
 		if err := cmd.Run(); err != nil {
 			return fmt.Errorf("同步代码失败: %v", err)
 		}
@@ -693,7 +700,7 @@ func syncFromMainRepo(reader *bufio.Reader) error {
 	fmt.Println(strings.Repeat("=", 60))
 
 	// 获取最新的commit信息
-	cmd = exec.Command("git", "-C", parentDir, "log", "-1", "--oneline")
+	cmd = exec.Command("git", "-C", absParentDir, "log", "-1", "--oneline")
 	logOutput, _ := cmd.Output()
 	if len(logOutput) > 0 {
 		fmt.Printf("\n最新提交: %s\n", string(logOutput))
