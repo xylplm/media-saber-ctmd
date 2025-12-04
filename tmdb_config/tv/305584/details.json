@@ -1,0 +1,226 @@
+{
+  "adult": false,
+  "aggregate_credits": {
+    "cast": [
+      {
+        "adult": false,
+        "gender": 2,
+        "id": 1168189,
+        "known_for_department": "Acting",
+        "name": "杨志刚",
+        "order": 0,
+        "original_name": "杨志刚",
+        "popularity": 2.6269,
+        "profile_path": "/w31mXlU6Pn4IWalcRtGLd189kQD.jpg",
+        "roles": [
+          {
+            "character": "苏无名",
+            "credit_id": "692ec5ac6f8a6b082edc36f7",
+            "episode_count": 1
+          }
+        ],
+        "total_episode_count": 1
+      },
+      {
+        "adult": false,
+        "gender": 2,
+        "id": 1557178,
+        "known_for_department": "Acting",
+        "name": "杨旭文",
+        "order": 1,
+        "original_name": "杨旭文",
+        "popularity": 1.9715,
+        "profile_path": "/doI0BtQ39mRn9WzmmXylnukCuks.jpg",
+        "roles": [
+          {
+            "character": "卢凌风",
+            "credit_id": "692ec5c93392135e206e2db6",
+            "episode_count": 1
+          }
+        ],
+        "total_episode_count": 1
+      }
+    ],
+    "crew": []
+  },
+  "alternative_titles": {
+    "results": []
+  },
+  "backdrop_path": "/orvB1ef9298ED9yEJiCEOmcAZy3.jpg",
+  "created_by": [
+    {
+      "credit_id": "6916d39bc5c5faff3aa0e1b1",
+      "gender": 2,
+      "id": 1168189,
+      "name": "杨志刚",
+      "original_name": "杨志刚",
+      "profile_path": "/w31mXlU6Pn4IWalcRtGLd189kQD.jpg"
+    },
+    {
+      "credit_id": "6916d3a4ad78ce5faeac26ff",
+      "gender": 2,
+      "id": 1557178,
+      "name": "杨旭文",
+      "original_name": "杨旭文",
+      "profile_path": "/doI0BtQ39mRn9WzmmXylnukCuks.jpg"
+    },
+    {
+      "credit_id": "6916d3c2160c5cef5b40e659",
+      "gender": 2,
+      "id": 1973975,
+      "name": "巨兴茂",
+      "original_name": "巨兴茂",
+      "profile_path": "/dsYS6UgYM2sSX6zguE90sKpwToc.jpg"
+    },
+    {
+      "credit_id": "6916d3dc78d69718849c54c3",
+      "gender": 1,
+      "id": 2651799,
+      "name": "郜思雯",
+      "original_name": "Gao SiWen",
+      "profile_path": "/ls2HviJACl92Mqi1H6y7N62pVHZ.jpg"
+    },
+    {
+      "credit_id": "6916d3e92859dd97554c9911",
+      "gender": 1,
+      "id": 1905964,
+      "name": "孙雪宁",
+      "original_name": "Sun Xuening",
+      "profile_path": "/ljAAA4TIWc6v1clXp7Hh9jYOPVh.jpg"
+    }
+  ],
+  "credits": {
+    "cast": [
+      {
+        "adult": false,
+        "character": "苏无名",
+        "credit_id": "692ec5ac6f8a6b082edc36f7",
+        "gender": 2,
+        "id": 1168189,
+        "known_for_department": "Acting",
+        "name": "杨志刚",
+        "order": 0,
+        "original_name": "杨志刚",
+        "popularity": 2.6269,
+        "profile_path": "/w31mXlU6Pn4IWalcRtGLd189kQD.jpg"
+      },
+      {
+        "adult": false,
+        "character": "卢凌风",
+        "credit_id": "692ec5c93392135e206e2db6",
+        "gender": 2,
+        "id": 1557178,
+        "known_for_department": "Acting",
+        "name": "杨旭文",
+        "order": 1,
+        "original_name": "杨旭文",
+        "popularity": 1.9715,
+        "profile_path": "/doI0BtQ39mRn9WzmmXylnukCuks.jpg"
+      }
+    ],
+    "crew": []
+  },
+  "episode_run_time": [],
+  "external_ids": {
+    "facebook_id": null,
+    "freebase_id": null,
+    "freebase_mid": null,
+    "imdb_id": "",
+    "instagram_id": null,
+    "tvdb_id": null,
+    "tvrage_id": null,
+    "twitter_id": null,
+    "wikidata_id": null
+  },
+  "first_air_date": "",
+  "genres": [],
+  "homepage": "",
+  "id": 305584,
+  "in_production": true,
+  "languages": [
+    "zh"
+  ],
+  "last_air_date": "2025-11-08",
+  "last_episode_to_air": {
+    "air_date": "2025-11-08",
+    "episode_number": 40,
+    "episode_type": "standard",
+    "id": 6683214,
+    "name": "唐朝诡事录之长安",
+    "overview": "",
+    "production_code": "",
+    "runtime": 44,
+    "season_number": 3,
+    "show_id": 305584,
+    "still_path": "/orvB1ef9298ED9yEJiCEOmcAZy3.jpg",
+    "vote_average": 0,
+    "vote_count": 0
+  },
+  "name": "唐朝诡事录之长安",
+  "networks": [],
+  "next_episode_to_air": null,
+  "number_of_episodes": 1,
+  "number_of_seasons": 1,
+  "origin_country": [
+    "CN"
+  ],
+  "original_language": "zh",
+  "original_name": "唐朝诡事录之长安",
+  "overview": "　　先天二年夏秋之交，天子虽已登基，但大长公主势力更盛，长安局势阴晴难定。卢凌风（杨旭文 饰）和苏无名（杨志刚 饰），奉命带着由裴喜君、费鸡师、樱桃和薛环组成的探案小队，以护送康国所献金桃的名义重返长安。繁华的长安，卢凌风复职雍州司法参军，苏无名则被授予一个特殊的官职，同时叫费鸡师出任酥山店掌柜，并将店铺设置成全长安的暗探情报中心。卢苏二人推出新政，开启环城探案模式，深入长安各坊，接触到了更广泛的百姓和民生，也借此避开了天子与大长公主的争斗。在历经康国的金桃、成佛寺的哭声、白泽的踪迹、食尾蛇、解忧店等多宗疑案后，最终长安的风云汇聚到事关朝堂的盛世马球案。卢凌风和苏无名，不得不直面这个刀光剑影的秋天以及各自的命运，并为此付出了沉重的代价。即使历经风雨，但他们终究在万年长安大观盛唐，护佑百姓的初心始终没有改变。",
+  "popularity": 2.6112,
+  "poster_path": "/dv0spVVAgy73VmE5kGpqeM5v31n.jpg",
+  "production_companies": [],
+  "production_countries": [],
+  "seasons": [
+    {
+      "air_date": "2025-11-08",
+      "episode_count": 1,
+      "id": 484741,
+      "name": "唐朝诡事录之长安",
+      "overview": "",
+      "poster_path": null,
+      "season_number": 3,
+      "vote_average": 0
+    }
+  ],
+  "spoken_languages": [
+    {
+      "english_name": "Mandarin",
+      "iso_639_1": "zh",
+      "name": "普通话"
+    }
+  ],
+  "status": "Returning Series",
+  "tagline": "",
+  "translations": {
+    "translations": [
+      {
+        "data": {
+          "homepage": "",
+          "name": "唐朝诡事录之长安",
+          "overview": "　　先天二年夏秋之交，天子虽已登基，但大长公主势力更盛，长安局势阴晴难定。卢凌风（杨旭文 饰）和苏无名（杨志刚 饰），奉命带着由裴喜君、费鸡师、樱桃和薛环组成的探案小队，以护送康国所献金桃的名义重返长安。繁华的长安，卢凌风复职雍州司法参军，苏无名则被授予一个特殊的官职，同时叫费鸡师出任酥山店掌柜，并将店铺设置成全长安的暗探情报中心。卢苏二人推出新政，开启环城探案模式，深入长安各坊，接触到了更广泛的百姓和民生，也借此避开了天子与大长公主的争斗。在历经康国的金桃、成佛寺的哭声、白泽的踪迹、食尾蛇、解忧店等多宗疑案后，最终长安的风云汇聚到事关朝堂的盛世马球案。卢凌风和苏无名，不得不直面这个刀光剑影的秋天以及各自的命运，并为此付出了沉重的代价。即使历经风雨，但他们终究在万年长安大观盛唐，护佑百姓的初心始终没有改变。",
+          "tagline": ""
+        },
+        "english_name": "Mandarin",
+        "iso_3166_1": "CN",
+        "iso_639_1": "zh",
+        "name": "普通话"
+      },
+      {
+        "data": {
+          "homepage": "",
+          "name": "重復詞條",
+          "overview": "",
+          "tagline": ""
+        },
+        "english_name": "Mandarin",
+        "iso_3166_1": "HK",
+        "iso_639_1": "zh",
+        "name": "普通话"
+      }
+    ]
+  },
+  "type": "Scripted",
+  "vote_average": 8,
+  "vote_count": 1
+}
