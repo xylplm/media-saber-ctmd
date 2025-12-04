@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 )
@@ -353,7 +354,25 @@ func getMediaID(reader *bufio.Reader) (string, error) {
 		return input, nil
 	}
 }
+// openBrowser 在默认浏览器中打开URL
+func openBrowser(url string) error {
+	var cmd *exec.Cmd
+	
+	switch runtime.GOOS {
+	case "windows":
+		cmd = exec.Command("cmd", "/c", "start", url)
+	case "darwin":
+		cmd = exec.Command("open", url)
+	case "linux":
+		cmd = exec.Command("xdg-open", url)
+	default:
+		return fmt.Errorf("不支持的操作系统")
+	}
+	
+	return cmd.Start()
+}
 
+// getContinue 询问是否继续
 // getContinue 询问是否继续
 func getContinue(reader *bufio.Reader) bool {
 	fmt.Print("\n是否继续获取其他数据? (y/n): ")
@@ -401,31 +420,71 @@ func submitPullRequest(reader *bufio.Reader) error {
 		return nil
 	}
 
-	// 输入分支名称
-	fmt.Print("\n请输入分支名称 (默认: update-tmdb-config): ")
-	branchInput, _ := reader.ReadString('\n')
-	branchName := strings.TrimSpace(branchInput)
-	if branchName == "" {
-		branchName = "update-tmdb-config"
-	}
+	// 选择提交模式
+	fmt.Println("\n" + strings.Repeat("=", 60))
+	fmt.Println("请选择提交模式:")
+	fmt.Println("  1. 新建分支提交新的PR")
+	fmt.Println("  2. 提交修改到已有的PR（推送到现有分支）")
+	fmt.Print("\n请输入选项 (1/2): ")
+	modeInput, _ := reader.ReadString('\n')
+	mode := strings.TrimSpace(modeInput)
 
-	// 输入提交信息
-	fmt.Print("请输入提交信息: ")
-	messageInput, _ := reader.ReadString('\n')
-	message := strings.TrimSpace(messageInput)
-	if message == "" {
-		message = "Update TMDB config metadata"
-	}
+	var branchName, message string
 
-	// 切换到分支
-	fmt.Printf("\n正在创建分支: %s...\n", branchName)
-	cmd = exec.Command("git", "-C", parentDir, "checkout", "-b", branchName)
-	if _, err := cmd.CombinedOutput(); err != nil {
-		// 分支可能已存在，尝试切换
-		cmd = exec.Command("git", "-C", parentDir, "checkout", branchName)
-		if err := cmd.Run(); err != nil {
-			return fmt.Errorf("切换分支失败: %v", err)
+	if mode == "1" {
+		// 新建分支模式
+		fmt.Print("\n请输入分支名称 (默认: update-tmdb-config): ")
+		branchInput, _ := reader.ReadString('\n')
+		branchName = strings.TrimSpace(branchInput)
+		if branchName == "" {
+			branchName = "update-tmdb-config"
 		}
+
+		// 输入提交信息
+		fmt.Print("请输入提交信息 (默认: Update TMDB config metadata): ")
+		messageInput, _ := reader.ReadString('\n')
+		message = strings.TrimSpace(messageInput)
+		if message == "" {
+			message = "Update TMDB config metadata"
+		}
+
+		// 切换到分支
+		fmt.Printf("\n正在创建分支: %s...\n", branchName)
+		cmd = exec.Command("git", "-C", parentDir, "checkout", "-b", branchName)
+		if _, err := cmd.CombinedOutput(); err != nil {
+			// 分支可能已存在，尝试切换
+			cmd = exec.Command("git", "-C", parentDir, "checkout", branchName)
+			if err := cmd.Run(); err != nil {
+				return fmt.Errorf("切换分支失败: %v", err)
+			}
+		}
+
+	} else if mode == "2" {
+		// 提交到现有分支模式
+		// 获取当前分支名称
+		cmd := exec.Command("git", "-C", parentDir, "rev-parse", "--abbrev-ref", "HEAD")
+		branchOutput, err := cmd.Output()
+		if err != nil {
+			return fmt.Errorf("获取当前分支失败: %v", err)
+		}
+		branchName = strings.TrimSpace(string(branchOutput))
+
+		if branchName == "main" || branchName == "master" {
+			return fmt.Errorf("不能在main/master分支上提交，请先创建新分支")
+		}
+
+		fmt.Printf("当前分支: %s\n", branchName)
+
+		// 输入提交信息
+		fmt.Print("请输入提交信息 (默认: Update TMDB config metadata): ")
+		messageInput, _ := reader.ReadString('\n')
+		message = strings.TrimSpace(messageInput)
+		if message == "" {
+			message = "Update TMDB config metadata"
+		}
+
+	} else {
+		return fmt.Errorf("无效的选项")
 	}
 
 	// 添加更改
@@ -444,23 +503,48 @@ func submitPullRequest(reader *bufio.Reader) error {
 
 	// 推送到远程
 	fmt.Println("正在推送到远程...")
-	cmd = exec.Command("git", "-C", parentDir, "push", "-u", "origin", branchName)
-	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("推送失败: %v", err)
+	if mode == "1" {
+		// 新分支需要设置upstream
+		cmd = exec.Command("git", "-C", parentDir, "push", "-u", "origin", branchName)
+		if err := cmd.Run(); err != nil {
+			return fmt.Errorf("推送失败: %v", err)
+		}
+	} else {
+		// 现有分支直接推送
+		cmd = exec.Command("git", "-C", parentDir, "push")
+		if err := cmd.Run(); err != nil {
+			return fmt.Errorf("推送失败: %v", err)
+		}
 	}
 
-	// 提供PR链接信息
+	// 提供结果信息
 	fmt.Println("\n" + strings.Repeat("=", 60))
 	fmt.Println("✓ 提交成功！")
 	fmt.Println(strings.Repeat("=", 60))
-	fmt.Printf("\n分支已推送到: origin/%s\n", branchName)
-	fmt.Println("请访问以下链接创建PR:")
-	fmt.Printf("https://github.com/xylplm/media-saber-ctmd/compare/main...%s\n", branchName)
-	fmt.Println("\n或者:")
-	fmt.Println("1. 访问 https://github.com/xylplm/media-saber-ctmd")
-	fmt.Println("2. 点击 'Pull requests' 标签")
-	fmt.Println("3. 点击 'New pull request'")
-	fmt.Printf("4. 选择您的分支 '%s' 并创建PR\n", branchName)
+
+	var prURL string
+	if mode == "1" {
+		fmt.Printf("\n分支已推送到: origin/%s\n", branchName)
+		prURL = fmt.Sprintf("https://github.com/xylplm/media-saber-ctmd/compare/main...%s", branchName)
+		fmt.Println("请访问以下链接创建PR:")
+		fmt.Println(prURL)
+	} else {
+		fmt.Printf("\n修改已推送到分支: %s\n", branchName)
+		fmt.Println("如果该分支已有关联的PR，修改会自动出现在PR中。")
+		prURL = fmt.Sprintf("https://github.com/xylplm/media-saber-ctmd/compare/main...%s", branchName)
+		fmt.Printf("PR链接: %s\n", prURL)
+	}
+
+	// 询问是否打开浏览器
+	fmt.Print("\n是否在浏览器中打开链接? (y/n): ")
+	openInput, _ := reader.ReadString('\n')
+	if strings.TrimSpace(strings.ToLower(openInput)) == "y" {
+		if err := openBrowser(prURL); err != nil {
+			fmt.Printf("打开浏览器失败: %v\n", err)
+		} else {
+			fmt.Println("✓ 已在浏览器中打开链接")
+		}
+	}
 
 	return nil
 }

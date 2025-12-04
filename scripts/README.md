@@ -4,10 +4,25 @@
 
 ## 📂 文件说明
 
-- `tmdb_manager.go` - Go 程序源代码
+- `tmdb_manager.go` - Go 程序源代码（支持获取数据和一键提交PR）
 - `go.mod` - Go 模块配置
 - `build.bat` - Windows 交叉编译脚本
 - `build.sh` - Linux/macOS 交叉编译脚本
+
+## 📋 功能说明
+
+**TMDB Manager** 包含以下主要功能：
+
+1. **获取TMDB数据**
+   - 从TMDB API获取电影/电视剧信息
+   - 自动保存为JSON格式
+   - 支持修正和补充元数据
+
+2. **一键提交PR**
+   - 新建分支提交新的PR
+   - 提交修改到已有的PR
+   - 自动处理所有git操作
+   - 生成PR访问链接
 
 ## 🔨 编译
 
