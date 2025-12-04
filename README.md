@@ -68,24 +68,24 @@ copy config.example.json config.json
 **Windows:**
 ```bash
 # 双击运行或命令行执行
-.\cli\tmdb-fetcher-windows-amd64.exe
+.\cli\tmdb-manager-windows-amd64.exe
 ```
 
 **Linux:**
 ```bash
-chmod +x ./cli/tmdb-fetcher-linux-amd64
-./cli/tmdb-fetcher-linux-amd64
+chmod +x ./cli/tmdb-manager-linux-amd64
+./cli/tmdb-manager-linux-amd64
 ```
 
 **macOS:**
 ```bash
 # Intel 芯片
-chmod +x ./cli/tmdb-fetcher-macos-amd64
-./cli/tmdb-fetcher-macos-amd64
+chmod +x ./cli/tmdb-manager-macos-amd64
+./cli/tmdb-manager-macos-amd64
 
 # Apple Silicon (M1/M2/M3)
-chmod +x ./cli/tmdb-fetcher-macos-arm64
-./cli/tmdb-fetcher-macos-arm64
+chmod +x ./cli/tmdb-manager-macos-arm64
+./cli/tmdb-manager-macos-arm64
 ```
 
 **第三步：按提示操作**

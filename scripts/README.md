@@ -1,10 +1,10 @@
 # Scripts 源代码目录
 
-本目录包含 TMDB Fetcher 的源代码，仅供开发者使用。
+本目录包含 TMDB Manager 的源代码，仅供开发者使用。
 
 ## 📂 文件说明
 
-- `tmdb_fetcher.go` - Go 程序源代码
+- `tmdb_manager.go` - Go 程序源代码
 - `go.mod` - Go 模块配置
 - `build.bat` - Windows 交叉编译脚本
 - `build.sh` - Linux/macOS 交叉编译脚本
@@ -30,10 +30,10 @@ chmod +x build.sh
 
 ```bash
 # 直接运行（需要在 cli 目录有 config.json）
-go run tmdb_fetcher.go
+go run tmdb_manager.go
 
 # 单平台编译
-go build -o tmdb-fetcher tmdb_fetcher.go
+go build -o tmdb-manager tmdb_manager.go
 ```
 
 ## 📝 修改编译输出目录

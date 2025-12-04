@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
@@ -31,8 +32,8 @@ type TMDBFetcher struct {
 }
 
 const banner = `============================================================
-  TMDB 数据获取工具
-  从TMDB API获取电影/电视剧数据并按格式保存
+  TMDB 数据管理工具
+  获取TMDB API数据 / 管理本地元数据 / 提交PR
 ============================================================
 `
 
@@ -364,6 +365,106 @@ func getContinue(reader *bufio.Reader) bool {
 	return input == "y" || input == "yes"
 }
 
+// submitPullRequest 提交PR到GitHub
+func submitPullRequest(reader *bufio.Reader) error {
+	fmt.Println("\n" + strings.Repeat("=", 60))
+	fmt.Println("📤 一键提交PR到 GitHub")
+	fmt.Println(strings.Repeat("=", 60))
+
+	// 检查git是否可用
+	if _, err := exec.LookPath("git"); err != nil {
+		return fmt.Errorf("未找到git命令，请确保已安装git")
+	}
+
+	// 检查是否在正确的目录
+	parentDir := filepath.Join("..", "..")
+	if _, err := os.Stat(filepath.Join(parentDir, ".git")); err != nil {
+		return fmt.Errorf("未找到.git目录，请确保在正确的项目目录中")
+	}
+
+	// 检查是否有未提交的更改
+	cmd := exec.Command("git", "-C", parentDir, "status", "--porcelain")
+	output, _ := cmd.Output()
+	if len(output) == 0 {
+		fmt.Println("✓ 当前没有需要提交的更改")
+		return nil
+	}
+
+	fmt.Println("\n检测到以下更改:")
+	fmt.Println(string(output))
+
+	// 确认提交
+	fmt.Print("\n确认提交这些更改? (y/n): ")
+	input, _ := reader.ReadString('\n')
+	if strings.TrimSpace(strings.ToLower(input)) != "y" {
+		fmt.Println("已取消")
+		return nil
+	}
+
+	// 输入分支名称
+	fmt.Print("\n请输入分支名称 (默认: update-tmdb-config): ")
+	branchInput, _ := reader.ReadString('\n')
+	branchName := strings.TrimSpace(branchInput)
+	if branchName == "" {
+		branchName = "update-tmdb-config"
+	}
+
+	// 输入提交信息
+	fmt.Print("请输入提交信息: ")
+	messageInput, _ := reader.ReadString('\n')
+	message := strings.TrimSpace(messageInput)
+	if message == "" {
+		message = "Update TMDB config metadata"
+	}
+
+	// 切换到分支
+	fmt.Printf("\n正在创建分支: %s...\n", branchName)
+	cmd = exec.Command("git", "-C", parentDir, "checkout", "-b", branchName)
+	if output, err := cmd.CombinedOutput(); err != nil {
+		// 分支可能已存在，尝试切换
+		cmd = exec.Command("git", "-C", parentDir, "checkout", branchName)
+		if err := cmd.Run(); err != nil {
+			return fmt.Errorf("切换分支失败: %v", err)
+		}
+	}
+
+	// 添加更改
+	fmt.Println("正在添加文件...")
+	cmd = exec.Command("git", "-C", parentDir, "add", "tmdb_config/")
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("添加文件失败: %v", err)
+	}
+
+	// 提交更改
+	fmt.Println("正在提交更改...")
+	cmd = exec.Command("git", "-C", parentDir, "commit", "-m", message)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("提交失败: %v", err)
+	}
+
+	// 推送到远程
+	fmt.Println("正在推送到远程...")
+	cmd = exec.Command("git", "-C", parentDir, "push", "-u", "origin", branchName)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("推送失败: %v", err)
+	}
+
+	// 提供PR链接信息
+	fmt.Println("\n" + strings.Repeat("=", 60))
+	fmt.Println("✓ 提交成功！")
+	fmt.Println(strings.Repeat("=", 60))
+	fmt.Printf("\n分支已推送到: origin/%s\n", branchName)
+	fmt.Println("请访问以下链接创建PR:")
+	fmt.Printf("https://github.com/xylplm/media-saber-ctmd/compare/main...%s\n", branchName)
+	fmt.Println("\n或者:")
+	fmt.Println("1. 访问 https://github.com/xylplm/media-saber-ctmd")
+	fmt.Println("2. 点击 'Pull requests' 标签")
+	fmt.Println("3. 点击 'New pull request'")
+	fmt.Printf("4. 选择您的分支 '%s' 并创建PR\n", branchName)
+
+	return nil
+}
+
 func main() {
 	fmt.Println(banner)
 
@@ -379,52 +480,78 @@ func main() {
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
-		// 获取媒体类型
-		mediaType, err := getMediaType(reader)
-		if err != nil {
-			fmt.Printf("错误: %v\n", err)
-			break
-		}
-		if mediaType == "quit" {
-			fmt.Println("\n再见!")
-			break
-		}
-
-		// 获取媒体ID
-		mediaID, err := getMediaID(reader)
-		if err != nil {
-			fmt.Printf("错误: %v\n", err)
-			break
-		}
-		if mediaID == "quit" {
-			fmt.Println("\n再见!")
-			break
-		}
-
-		// 获取并保存数据
-		var fetchErr error
-		if mediaType == "movie" {
-			fetchErr = fetcher.fetchAndSaveMovie(mediaID)
-		} else {
-			fetchErr = fetcher.fetchAndSaveTV(mediaID)
-		}
-
-		if fetchErr != nil {
-			fmt.Printf("\n错误: %v\n", fetchErr)
-			fmt.Print("是否重试? (y/n): ")
-			input, _ := reader.ReadString('\n')
-			input = strings.TrimSpace(strings.ToLower(input))
-			if input != "y" && input != "yes" {
-				break
-			}
-			continue
-		}
-
-		// 询问是否继续
 		fmt.Println("\n" + strings.Repeat("=", 60))
-		if !getContinue(reader) {
+		fmt.Println("主菜单:")
+		fmt.Println("  1. 获取电影/电视剧数据")
+		fmt.Println("  2. 一键提交修改到PR")
+		fmt.Println("  q. 退出")
+		fmt.Print("\n请输入选项 (1/2/q): ")
+
+		mainChoice, _ := reader.ReadString('\n')
+		mainChoice = strings.TrimSpace(strings.ToLower(mainChoice))
+
+		switch mainChoice {
+		case "1":
+			// 原有的数据获取流程
+			for {
+				// 获取媒体类型
+				mediaType, err := getMediaType(reader)
+				if err != nil {
+					fmt.Printf("错误: %v\n", err)
+					break
+				}
+				if mediaType == "quit" {
+					break
+				}
+
+				// 获取媒体ID
+				mediaID, err := getMediaID(reader)
+				if err != nil {
+					fmt.Printf("错误: %v\n", err)
+					break
+				}
+				if mediaID == "quit" {
+					break
+				}
+
+				// 获取并保存数据
+				var fetchErr error
+				if mediaType == "movie" {
+					fetchErr = fetcher.fetchAndSaveMovie(mediaID)
+				} else {
+					fetchErr = fetcher.fetchAndSaveTV(mediaID)
+				}
+
+				if fetchErr != nil {
+					fmt.Printf("\n错误: %v\n", fetchErr)
+					fmt.Print("是否重试? (y/n): ")
+					input, _ := reader.ReadString('\n')
+					input = strings.TrimSpace(strings.ToLower(input))
+					if input != "y" && input != "yes" {
+						break
+					}
+					continue
+				}
+
+				// 询问是否继续
+				fmt.Println("\n" + strings.Repeat("=", 60))
+				if !getContinue(reader) {
+					break
+				}
+			}
+
+		case "2":
+			// 提交PR
+			if err := submitPullRequest(reader); err != nil {
+				fmt.Printf("\n错误: %v\n", err)
+			}
+
+		case "q":
 			fmt.Println("\n感谢使用，再见!")
-			break
+			os.Exit(0)
+
+		default:
+			fmt.Println("无效的选项，请重新输入")
 		}
 	}
 }

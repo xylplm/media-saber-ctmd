@@ -1,6 +1,6 @@
-# 📦 TMDB Fetcher 命令行工具
+# 📦 TMDB Manager 命令行工具
 
-这里存放预编译的 TMDB 数据获取工具，**无需安装任何环境**，下载即用！
+这里存放预编译的 TMDB 数据管理工具，**无需安装任何环境**，下载即用！
 
 ## ✨ 特点
 
@@ -31,10 +31,10 @@ copy config.example.json config.json
 
 ```bash
 # Intel/AMD 处理器（64位）
-.\cli\tmdb-fetcher-windows-amd64.exe
+.\cli\tmdb-manager-windows-amd64.exe
 
 # ARM 处理器（如 Surface Pro X）
-.\cli\tmdb-fetcher-windows-arm64.exe
+.\cli\tmdb-manager-windows-arm64.exe
 ```
 
 💡 **提示**: 可以直接双击运行 `.exe` 文件
@@ -43,24 +43,24 @@ copy config.example.json config.json
 
 ```bash
 # Intel/AMD 处理器
-chmod +x ./cli/tmdb-fetcher-linux-amd64
-./cli/tmdb-fetcher-linux-amd64
+chmod +x ./cli/tmdb-manager-linux-amd64
+./cli/tmdb-manager-linux-amd64
 
 # ARM 处理器（如树莓派）
-chmod +x ./cli/tmdb-fetcher-linux-arm64
-./cli/tmdb-fetcher-linux-arm64
+chmod +x ./cli/tmdb-manager-linux-arm64
+./cli/tmdb-manager-linux-arm64
 ```
 
 #### macOS
 
 ```bash
 # Intel 芯片（2020年及之前的 Mac）
-chmod +x ./cli/tmdb-fetcher-macos-amd64
-./cli/tmdb-fetcher-macos-amd64
+chmod +x ./cli/tmdb-manager-macos-amd64
+./cli/tmdb-manager-macos-amd64
 
 # Apple Silicon 芯片（M1/M2/M3）
-chmod +x ./cli/tmdb-fetcher-macos-arm64
-./cli/tmdb-fetcher-macos-arm64
+chmod +x ./cli/tmdb-manager-macos-arm64
+./cli/tmdb-manager-macos-arm64
 ```
 
 ### 第三步：按提示操作
@@ -73,12 +73,12 @@ chmod +x ./cli/tmdb-fetcher-macos-arm64
 
 | 文件名 | 平台 | 架构 | 文件大小 |
 |--------|------|------|----------|
-| `tmdb-fetcher-windows-amd64.exe` | Windows | Intel/AMD 64位 | ~8MB |
-| `tmdb-fetcher-windows-arm64.exe` | Windows | ARM 64位 | ~8MB |
-| `tmdb-fetcher-linux-amd64` | Linux | Intel/AMD 64位 | ~8MB |
-| `tmdb-fetcher-linux-arm64` | Linux | ARM 64位 | ~8MB |
-| `tmdb-fetcher-macos-amd64` | macOS | Intel | ~8MB |
-| `tmdb-fetcher-macos-arm64` | macOS | Apple Silicon | ~8MB |
+| `tmdb-manager-windows-amd64.exe` | Windows | Intel/AMD 64位 | ~8MB |
+| `tmdb-manager-windows-arm64.exe` | Windows | ARM 64位 | ~8MB |
+| `tmdb-manager-linux-amd64` | Linux | Intel/AMD 64位 | ~8MB |
+| `tmdb-manager-linux-arm64` | Linux | ARM 64位 | ~8MB |
+| `tmdb-manager-macos-amd64` | macOS | Intel | ~8MB |
+| `tmdb-manager-macos-arm64` | macOS | Apple Silicon | ~8MB |
 
 ## 🔨 自己编译
 
