@@ -42,3 +42,4 @@ env/
 .DS_Store
 Thumbs.db
 cli/tmdb-manager-windows-amd64.exe~
+scripts/tmdb_manager.exe

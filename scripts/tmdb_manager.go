@@ -395,14 +395,21 @@ func submitPullRequest(reader *bufio.Reader) error {
 		return fmt.Errorf("未找到git命令，请确保已安装git")
 	}
 
-	// 检查是否在正确的目录
-	parentDir := filepath.Join("..", "..")
-	if _, err := os.Stat(filepath.Join(parentDir, ".git")); err != nil {
+	// 获取项目根目录（相对于scripts目录的上级）
+	parentDir := ".."
+	absParentDir, err := filepath.Abs(parentDir)
+	if err != nil {
+		return fmt.Errorf("获取项目路径失败: %v", err)
+	}
+
+	// 检查.git目录是否存在
+	gitDir := filepath.Join(absParentDir, ".git")
+	if _, err := os.Stat(gitDir); err != nil {
 		return fmt.Errorf("未找到.git目录，请确保在正确的项目目录中")
 	}
 
 	// 检查是否有未提交的更改
-	cmd := exec.Command("git", "-C", parentDir, "status", "--porcelain")
+	cmd := exec.Command("git", "-C", absParentDir, "status", "--porcelain")
 	output, _ := cmd.Output()
 	if len(output) == 0 {
 		fmt.Println("✓ 当前没有需要提交的更改")
@@ -446,7 +453,7 @@ func submitPullRequest(reader *bufio.Reader) error {
 			// 检查分支是否存在，如果存在则自动递增
 			fmt.Println("正在生成唯一的分支名称...")
 			for {
-				cmd := exec.Command("git", "-C", parentDir, "rev-parse", "--verify", branchName)
+				cmd := exec.Command("git", "-C", absParentDir, "rev-parse", "--verify", branchName)
 				if err := cmd.Run(); err != nil {
 					// 分支不存在，可以使用
 					break
@@ -459,7 +466,7 @@ func submitPullRequest(reader *bufio.Reader) error {
 		} else {
 			// 用户输入了分支名称，检查是否已存在
 			fmt.Println("正在检查分支是否存在...")
-			cmd := exec.Command("git", "-C", parentDir, "rev-parse", "--verify", branchName)
+			cmd := exec.Command("git", "-C", absParentDir, "rev-parse", "--verify", branchName)
 			if err := cmd.Run(); err == nil {
 				// 分支已存在
 				fmt.Printf("\n⚠️  警告: 分支 '%s' 已存在\n", branchName)
@@ -472,7 +479,7 @@ func submitPullRequest(reader *bufio.Reader) error {
 					originalBranchName := branchName
 					fmt.Println("正在生成唯一的分支名称...")
 					for {
-						cmd := exec.Command("git", "-C", parentDir, "rev-parse", "--verify", branchName)
+						cmd := exec.Command("git", "-C", absParentDir, "rev-parse", "--verify", branchName)
 						if err := cmd.Run(); err != nil {
 							// 分支不存在，可以使用
 							break
@@ -490,7 +497,7 @@ func submitPullRequest(reader *bufio.Reader) error {
 
 		// 创建新分支
 		fmt.Printf("正在创建分支: %s...\n", branchName)
-		cmd = exec.Command("git", "-C", parentDir, "checkout", "-b", branchName)
+		cmd = exec.Command("git", "-C", absParentDir, "checkout", "-b", branchName)
 		if err := cmd.Run(); err != nil {
 			return fmt.Errorf("创建分支失败: %v", err)
 		}
@@ -506,7 +513,7 @@ func submitPullRequest(reader *bufio.Reader) error {
 	} else if mode == "2" {
 		// 提交到现有分支模式
 		// 获取当前分支名称
-		cmd := exec.Command("git", "-C", parentDir, "rev-parse", "--abbrev-ref", "HEAD")
+		cmd := exec.Command("git", "-C", absParentDir, "rev-parse", "--abbrev-ref", "HEAD")
 		branchOutput, err := cmd.Output()
 		if err != nil {
 			return fmt.Errorf("获取当前分支失败: %v", err)
@@ -533,14 +540,14 @@ func submitPullRequest(reader *bufio.Reader) error {
 
 	// 添加更改
 	fmt.Println("正在添加文件...")
-	cmd = exec.Command("git", "-C", parentDir, "add", "tmdb_config/")
+	cmd = exec.Command("git", "-C", absParentDir, "add", "tmdb_config/")
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("添加文件失败: %v", err)
 	}
 
 	// 提交更改
 	fmt.Println("正在提交更改...")
-	cmd = exec.Command("git", "-C", parentDir, "commit", "-m", message)
+	cmd = exec.Command("git", "-C", absParentDir, "commit", "-m", message)
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("提交失败: %v", err)
 	}
@@ -549,13 +556,13 @@ func submitPullRequest(reader *bufio.Reader) error {
 	fmt.Println("正在推送到远程...")
 	if mode == "1" {
 		// 新分支需要设置upstream
-		cmd = exec.Command("git", "-C", parentDir, "push", "-u", "origin", branchName)
+		cmd = exec.Command("git", "-C", absParentDir, "push", "-u", "origin", branchName)
 		if err := cmd.Run(); err != nil {
 			return fmt.Errorf("推送失败: %v", err)
 		}
 	} else {
 		// 现有分支直接推送
-		cmd = exec.Command("git", "-C", parentDir, "push")
+		cmd = exec.Command("git", "-C", absParentDir, "push")
 		if err := cmd.Run(); err != nil {
 			return fmt.Errorf("推送失败: %v", err)
 		}
